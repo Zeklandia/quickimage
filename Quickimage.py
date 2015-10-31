@@ -116,11 +116,3 @@ def make_RGB():
     plt.imshow(final,aspect='equal')
 
     return
-    
-
-
-    
-
-
-
-
