@@ -6,7 +6,8 @@ import robust as rb
 import glob
 import img_scale
 
-
+band = ‘V’
+files = glob.glob('Mantis*[0-9]'+band+'_cal.fit*’)
 image,header = qi.readimage(files[0])
 ysz,xsz = np.shape(image)
 zsz = len(files)
