@@ -3,9 +3,16 @@
 Spyder Editor
 This is a temporary script file.
 """
-# 001V image has an airplane
-# Some of the brighter stars are saturated
 
+######################################################################
+# Quickimage.py can be used to view single images, combine multiple images in
+# the same band (accounting for rotation), and make a complete false-color image.
+# 
+# To run (example, three images in V, R, and ip bands): Calibrate Astrometry
+# on all nine images (save as original name + _cal.fits).  Run program, 
+# get into the dir with data, "qi.make_RGB()".  
+
+import Quickimage as qi
 import pyfits as pf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,6 +20,10 @@ import robust as rb
 import glob,os
 import img_scale
 import hcongrid as h
+
+#to read or to plot an image:
+#example:
+    #qi.readimage('Mantis Shrimp-001V.fit',plot=True)
 
 def readimage(imfile,plot=False,siglo=3,sighi=7):
     image,header = pf.getdata(imfile,0,header=True)
@@ -38,6 +49,10 @@ def show_image(image,siglo=3,sighi=7):
     plt.imshow(image,vmin=vmin,vmax=vmax,cmap='gray')
     return
 
+
+#makes one master image from the three images in each band
+#example to make master file Green.fit
+    # qi.makeband(band='R') 
     
 def makeband(band='V'):
     
@@ -72,6 +87,10 @@ def makeband(band='V'):
         os.remove(tag+'.fit')
     pf.writeto(tag+'.fit',final,header0)
     
+#combines the three master files into one false-color calibrated image
+#example 
+    #qi.make_RGB()
+    
 def make_RGB():
 
     Blue,header = pf.getdata('Blue.fit',0,header=True)
@@ -104,8 +123,8 @@ def make_RGB():
     
     final = np.zeros((Blue.shape[0],Blue.shape[1],3),dtype=float)  
     
-    sigmin = 0.25
-    sigmax = 5
+    sigmin = 1.25
+    sigmax = 15
     
     final[:,:,0] = img_scale.sqrt(Red,scale_min=rmed+sigmin*rsig,scale_max=rmed+0.6*sigmax*rsig)
     final[:,:,1] = img_scale.sqrt(Green,scale_min=gmed+sigmin*gsig,scale_max=gmed+0.6*sigmax*gsig)
@@ -113,6 +132,19 @@ def make_RGB():
     
     plt.ion()
     plt.figure(99)
+    #plt.imshow(img,aspect='equal')
+    plt.xlim(250,1550)
+    plt.ylim(288,1588)
+    plt.xticks([])
+    plt.yticks([])
     plt.imshow(final,aspect='equal')
 
     return
+
+
+
+    
+
+
+
+
